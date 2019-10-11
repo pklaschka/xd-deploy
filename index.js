@@ -4,8 +4,13 @@ console.log('Running', args[0]);
 if (args[0] === 'server') {
     require('./server').start();
 } else if (args[0] === 'client') {
-    require('./client').start();
-
+    if (!args[1]) {
+           console.error('Please specify the server location.');
+           console.log('xd-deploy client (server-location)');
+           console.log('e.g., xd-deploy client http://localhost:8080');
+    } else {
+        require('./client').start(args[1]);
+    }
 } else if (args[0] === 'dev') {
 
 } else {
