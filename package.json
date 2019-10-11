@@ -1,0 +1,20 @@
+{
+  "name": "xd-delivery",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.17.1",
+    "express-zip": "^2.0.1",
+    "node-watch": "^0.6.3",
+    "socket.io": "^2.3.0",
+    "socket.io-client": "latest"
+  }
+}
