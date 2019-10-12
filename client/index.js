@@ -34,24 +34,30 @@ module.exports = {
 
             const writer = fs.createWriteStream(zipLocation);
 
-            const zip = await axios.get(`${serverLocation}/download/${params.id}`, {
-                responseType: 'stream'
-            });
-            console.log(`> Download complete. Extracting to ${xdPluginFolderLocation}`);
-            writer.on('finish', () => {
-                // Extract zip file
-                if (fs.existsSync(path.join(xdPluginFolderLocation, params.id)))
-                    rrmdir(path.join(xdPluginFolderLocation, params.id));
+            try {
+                const zip = await axios.get(`${serverLocation}/download/${params.id}`, {
+                    responseType: 'stream'
+                });
+                console.log(`> Download complete. Extracting to ${xdPluginFolderLocation}`);
+                writer.on('finish', () => {
+                    // Extract zip file
+                    if (fs.existsSync(path.join(xdPluginFolderLocation, params.id)))
+                        rrmdir(path.join(xdPluginFolderLocation, params.id));
 
-                if (!fs.existsSync(xdPluginFolderLocation)) {
-                    throw new Error('Adobe XD Plugins directory does not exist. Expected ' + xdPluginFolderLocation + ' to exist.');
-                } else {
-                    extract(zipLocation, {dir: xdPluginFolderLocation}, () => {
-                        console.log('> Extraction completed.');
-                    });
+                    if (!fs.existsSync(xdPluginFolderLocation)) {
+                        throw new Error('Adobe XD Plugins directory does not exist. Expected ' + xdPluginFolderLocation + ' to exist.');
+                    } else {
+                        extract(zipLocation, {dir: xdPluginFolderLocation}, () => {
+                            console.log('> Extraction completed.');
+                        });
+                    }
+                });
+                zip.data.pipe(writer);
+            } catch (e) {
+                if (e.response.status === 404) {
+                    console.warn('> Server returned 404, ignoring change notification');
                 }
-            });
-            zip.data.pipe(writer);
+            }
         })
 
     }

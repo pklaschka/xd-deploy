@@ -1,5 +1,7 @@
 const fs = require('fs');
 const path = require('path');
+const zip = require('../lib/zip');
+const axios = require('axios');
 
 /**
  * Run the developer client
@@ -8,7 +10,7 @@ const path = require('path');
  * @param {string} [location='.'] The plugin folder location.
  * @throws {Error} When not inside a plugin folder
  */
-module.exports = function(action, serverLocation, location = '.') {
+module.exports = async function(action, serverLocation, location = '.') {
     if (!isPluginFolder(location)) {
         throw new Error('Not inside a plugin folder');
     }
@@ -16,7 +18,9 @@ module.exports = function(action, serverLocation, location = '.') {
     if (action === 'watch') {
 
     } else if (action === 'install') {
-        send(serverLocation, location);
+        await send(serverLocation, location);
+    } else {
+        throw new Error('Unknown action: ' + action)
     }
 };
 
@@ -24,11 +28,25 @@ module.exports = function(action, serverLocation, location = '.') {
  * Send the current version to the server
  * @param {string} serverLocation The server location
  * @param {string} localLocation The local plugin location
- * @throws {Error} When not inside a plugin folder
+ * @throws {Error} When not inside a plugin folder or the server location is not specified
  */
-function send(serverLocation, localLocation) {
+async function send(serverLocation, localLocation) {
+    if (!serverLocation)
+        throw new Error('Server location not specified');
     const id = getId(localLocation);
+    const zipLocation = path.join(__dirname, `${id}.zip`);
     console.info('Sending plugin', id);
+
+    await zip(localLocation, zipLocation);
+    await axios.post(serverLocation + '/post/' + id,
+        fs.readFileSync(zipLocation), {
+        headers: {'Content-Type': 'application/zip'}
+        }
+    );
+
+    // fs.unlinkSync(zipLocation);
+
+    console.info('Sent successfully');
 }
 
 /**
@@ -46,8 +64,9 @@ function getId(location) {
                 path.join(location, 'manifest.json')
             ).toString()
         );
-        if (!manifest.id || !/[a-z0-9]+/.test(manifest.id)) {
-            throw new Error('No id specified in the manifest.json. Are you sure you\'re in a plugin folder?');
+        if (!manifest.id || !(/^[a-z0-9]+$/.test(manifest.id))) {
+            throw new Error('No valid id specified in the manifest.json. ' +
+                'Are you sure you\'re in a plugin folder?');
         } else {
             return manifest.id;
         }
