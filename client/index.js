@@ -3,6 +3,7 @@ const axios = require('axios');
 const fs = require('fs');
 const extract = require('extract-zip');
 const path = require('path');
+const rrmdir = require('../lib/rmdir');
 
 const zipLocation = path.join(__dirname, './current.zip');
 
@@ -26,7 +27,7 @@ module.exports = {
         client.on('changed', async (params) => {
             console.log('Updating plugin with id', params.id);
             // download zip
-            console.log('\tDownloading plugin');
+            console.log('> Downloading plugin');
 
             if (fs.existsSync(zipLocation))
                 fs.unlinkSync(zipLocation);
@@ -36,15 +37,17 @@ module.exports = {
             const zip = await axios.get(`${serverLocation}/download/${params.id}`, {
                 responseType: 'stream'
             });
-            console.log(`\tDownload complete. Extracting to ${xdPluginFolderLocation}`);
+            console.log(`> Download complete. Extracting to ${xdPluginFolderLocation}`);
             writer.on('finish', () => {
                 // Extract zip file
+                if (fs.existsSync(path.join(xdPluginFolderLocation, params.id)))
+                    rrmdir(path.join(xdPluginFolderLocation, params.id));
 
                 if (!fs.existsSync(xdPluginFolderLocation)) {
                     throw new Error('Adobe XD Plugins directory does not exist. Expected ' + xdPluginFolderLocation + ' to exist.');
                 } else {
                     extract(zipLocation, {dir: xdPluginFolderLocation}, () => {
-                        console.log('\tExtraction completed.');
+                        console.log('> Extraction completed.');
                     });
                 }
             });
