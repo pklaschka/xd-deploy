@@ -50,10 +50,11 @@ app.post('/post/:id', async (req, res) => {
     console.info('Receiving update for', id);
     fs.writeFileSync(zipLocation, req.body);
 
-    console.log(zipLocation, deploymentFolder);
-
     // Extract zip
-    extract(zipLocation, {dir: path.join(deploymentFolder, id)}, () => {
+    extract(zipLocation, {dir: path.join(deploymentFolder, id)}, (error) => {
+        if (error) {
+            throw error;
+        }
         fs.unlinkSync(zipLocation);
         // io.emit('changed', {for: 'everyone', id});
         return res.json({status: 'ok'});
@@ -80,11 +81,11 @@ module.exports = {
 
         const broadcast = _.debounce((path) => {
             if (/deployment\/[a-z0-9]+$/.test(path)) {
-                console.info('Change detected, broadcasting', path);
+                console.info('Change detected, broadcasting');
                 const id = /deployment\/([a-z0-9]+)\/?$/.exec(path)[1];
                 io.emit('changed', {for: 'everyone', id});
             } else {
-                console.info('Change detected, broadcasting', path);
+                console.info('Change detected, broadcasting');
                 const id = /deployment\/([a-z0-9]+)\/.*$/.exec(path)[1];
                 io.emit('changed', {for: 'everyone', id});
             }

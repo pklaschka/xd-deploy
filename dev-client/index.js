@@ -19,7 +19,8 @@ module.exports = async function(action, serverLocation, location = '.') {
     if (action === 'watch') {
         const watcher = chokidar.watch(location, {
             persistent: true,
-            interval: 1000
+            interval: 1000,
+            ignoreInitial: true
         });
 
         const onUpdate = async () => {
@@ -27,6 +28,7 @@ module.exports = async function(action, serverLocation, location = '.') {
         };
 
         watcher.on('all', async () => await onUpdate());
+        await send(serverLocation, location);
     } else if (action === 'install') {
         await send(serverLocation, location);
     } else {
