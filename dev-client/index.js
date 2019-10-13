@@ -56,7 +56,7 @@ async function send(serverLocation, localLocation) {
         }
     );
 
-    // fs.unlinkSync(zipLocation);
+    fs.unlinkSync(zipLocation);
 
     console.info('Sent successfully');
 }
