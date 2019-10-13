@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const zip = require('../lib/zip');
 const axios = require('axios');
+const chokidar = require('chokidar');
 
 /**
  * Run the developer client
@@ -16,7 +17,16 @@ module.exports = async function(action, serverLocation, location = '.') {
     }
 
     if (action === 'watch') {
+        const watcher = chokidar.watch(location, {
+            persistent: true,
+            interval: 1000
+        });
 
+        const onUpdate = async () => {
+            await send(serverLocation, location);
+        };
+
+        watcher.on('all', async () => await onUpdate());
     } else if (action === 'install') {
         await send(serverLocation, location);
     } else {
