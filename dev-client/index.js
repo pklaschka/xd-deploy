@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const zip = require('../lib/zip');
-const axios = require('axios');
+const {default: axios} = require('axios'); // import style for tsc --checkJS, cf. https://github.com/axios/axios/issues/2145
 const chokidar = require('chokidar');
 
 /**
@@ -32,7 +32,7 @@ module.exports = async function(action, serverLocation, location = '.') {
     } else if (action === 'install') {
         await send(serverLocation, location);
     } else {
-        throw new Error('Unknown action: ' + action)
+        throw new Error('Unknown action: ' + action + ' must be "watch" or "install"');
     }
 };
 
@@ -63,7 +63,7 @@ async function send(serverLocation, localLocation) {
 
 /**
  * Get the id of the current plugin
- * @param location The local plugin location
+ * @param {string} location The local plugin location
  * @returns {string} The id of the plugin
  * @throws {Error} When not inside a plugin folder
  */

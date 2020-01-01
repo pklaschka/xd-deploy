@@ -1,36 +1,76 @@
 #! /usr/bin/env node
+const program = require('commander');
+const packageJSON = require('./package.json');
 
-const args = process.argv.slice(2);
-console.log('Running', args[0]);
+program
+    .name('xd-deploy')
+    .version(packageJSON.version)
+    .action(() => {
+        console.error('No valid command specified.');
+        program.outputHelp();
+        process.exit(1);
+    });
 
-try {
-    if (args[0] === 'server') {
-        require('./server').start();
-    } else if (args[0] === 'client') {
-        if (!args[1]) {
-            console.error('Please specify the server location.');
-            console.log('xd-deploy client (server-location)');
-            console.log('e.g., xd-deploy client http://localhost:8080');
-        } else {
-            require('./client').start(args[1]);
+program
+    .command('server')
+    .description('start the server providing a bridge between clients and dev-client')
+    .option('-p, --port [port]', 'Which port to use', parseFloat, 8080)
+    .option('-d, --debug', 'enable verbose debugging output')
+    .action(async (options) => {
+        try {
+            const server = require('./server');
+            await server(options.port);
+        } catch (e) {
+            console.error(e.message);
+            if (options.debug) {
+                console.error(e.stack);
+            }
+            process.exit(1);
         }
-    } else if (args[0] === 'dev') {
-        if (!args[1] || !args[2]) {
-            console.error('Please specify the server location.');
-            console.log('xd-deploy dev (action) (server-location) [folder]');
-            console.log('e.g., xd-deploy dev watch http://localhost:8080 .');
-        } else {
-            if (args[3])
-                require('./dev-client')(args[1], args[2], args[3]);
-            else
-                require('./dev-client')(args[1], args[2]);
+    });
+
+program
+    .command('develop <action> <serverLocation> [directory]')
+    .description('Submit the plugin to the server', {
+        action: '"watch" or "install". With "install" the plugin gets deployed once, with "watch" the plugin folder gets watched for changes.',
+        serverLocation: 'The server url of the server started via "xd-deploy server',
+        directory: 'The plugin directory. The current working directory by default'
+    })
+    .usage('<action> <serverLocation> [directory]')
+    .alias('dev')
+    .option('-d, --debug', 'enable verbose debugging output')
+    .action(async (action, serverLocation, directory, options) => {
+        try {
+            const devClient = require('./dev-client');
+            await devClient(action, serverLocation, directory || '.');
+        } catch (e) {
+            console.error(e.message);
+            if (options.debug) {
+                console.error(e.stack);
+            }
+            process.exit(1);
         }
-    } else {
-        console.error('Please specify what you want to run. Expected `server`, `client` or `dev` as parameter, but got', args[0]);
-    }
-} catch (e) {
-    console.error('Error: ', e.message);
-    if (args.includes('--debug') || args.includes('-d')) {
-        console.log(e.stack)
-    }
-}
+    });
+
+program.command('client <serverLocation>')
+    .description('starts a client on a machine that has XD installed and installs all plugins, connects to the specified server, and updates them when possible.', {
+        serverLocation: 'The url of the server started with "xd-deploy server"'
+    })
+    .option('-d, --debug', 'enable verbose debugging output')
+    .action(async (serverLocation, options) => {
+        try {
+            const client = require('./client');
+            await client(serverLocation);
+        } catch (e) {
+            console.error(e.message);
+            if (options.debug) {
+                console.error(e.stack);
+            }
+            process.exit(1);
+        }
+    });
+
+program.parse(process.argv);
+
+const noCommandSpecified = process.argv.length < 3;
+if (noCommandSpecified) program.help();
