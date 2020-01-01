@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2020. by Pablo Klaschka
+ */
+
 const io = require('socket.io-client');
 const applyUpdate = require('./apply-update');
 

@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2020. by Pablo Klaschka
+ */
+
 const path = require('path');
 
 /**

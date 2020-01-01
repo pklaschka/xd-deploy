@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2020. by Pablo Klaschka
+ */
+
 const fs = require('fs');
 const path = require('path');
 const zip = require('../lib/zip');

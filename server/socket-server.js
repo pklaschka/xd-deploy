@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2020. by Pablo Klaschka
+ */
+
 const socketIO = require('socket.io');
 const _ = require('lodash');
 

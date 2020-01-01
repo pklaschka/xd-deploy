@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2020. by Pablo Klaschka
+ */
+
 const {zipLocation, xdPluginFolderLocation} = require('./locations');
 
 const {default: axios} = require('axios'); // import style for tsc --checkJS, cf. https://github.com/axios/axios/issues/2145

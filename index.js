@@ -1,4 +1,9 @@
 #! /usr/bin/env node
+
+/*
+ * Copyright (c) 2020. by Pablo Klaschka
+ */
+
 const program = require('commander');
 const packageJSON = require('./package.json');
 
