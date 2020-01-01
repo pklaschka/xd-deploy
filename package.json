@@ -1,6 +1,6 @@
 {
   "name": "@pklaschka/xd-deploy",
-  "version": "0.9.0",
+  "version": "0.9.1",
   "description": "A toolbelt for easy and quick, iterative plugin development for Adobe XD allowing quick deployment to multiple test machines, making testing your plugin super easy.",
   "main": "index.js",
   "bin": {
@@ -53,7 +53,9 @@
     "@types/socket.io-client": "^1.4.32",
     "typescript": "^3.7.4"
   },
-  "maintainers": ["Pablo Klaschka <xdplugins@pabloklaschka.de> (https://github.com/pklaschka)"],
+  "maintainers": [
+    "Pablo Klaschka <xdplugins@pabloklaschka.de> (https://github.com/pklaschka)"
+  ],
   "repository": "pklaschka/xd-deploy",
   "bugs": {
     "email": "xdplugins@pabloklaschka.de",
