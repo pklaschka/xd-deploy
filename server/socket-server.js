@@ -2,6 +2,7 @@ const socketIO = require('socket.io');
 const _ = require('lodash');
 
 /**
+ * The socket server
  * @type {undefined | import('socket.io').Server}
  */
 let io;
