@@ -1,0 +1,61 @@
+xd-deploy(1) -- A network plugin manager for Adobe XD
+===
+
+## SYNOPSIS
+
+`xd-deploy` <command> [options...]
+
+## DESCRIPTION
+`xd-deploy` is a Node-Based network plugin manager for Adobe XD CC.
+
+It allows to install plugins on multiple machines running Adobe XD simaltaniously during development.
+
+## INSTALL
+The CLI can get installed with `npm`:
+```
+npm install -g @pklaschka/xd-deploy
+```
+
+## ARCHITECTURE
+`xd-deploy` consists of at least three systems:
+- **server**: running in a network accessible for both *client* and *dev client*. Responsible for distributing plugins to *clients*
+- **client**: running on a machine with Adobe XD. Installs plugins from **server** in Adobe XD's develop folder
+- **dev client**: running on the development machine, this sends the plugin to the *server* for distribution
+
+## COMMANDS
+<command> is one of the three commands `server`, `client` or `dev` 
+which lets you start the corresponding service:
+
+### `server`
+`xd-deploy` `server` [args...]
+
+Start the **server**.
+
+Arguments:
+- `-p`=<port>, `--port`=<port>:
+  Use the specified <port>, or, if none is specified, 8080.
+
+### `client`
+`xd-deploy` `client` <serverLocation>
+
+Start the client. Installs plugins form **server** at <serverLocation> (full url).
+
+### `dev` (alias: `develop`)
+`xd-deploy` `dev` <mode> <serverLocation> [pluginFolder]
+
+Start the developer server for the plugin in [pluginFolder] (the CWD, if none is specified).
+
+Mode can be `install` (resulting in the plugin getting installed once) or `watch`, meaning the plugin folder will get watched for changes after the initial install and the plugin gets reinstalled on change.
+
+## EXAMPLES
+- `xd-deploy` `server` `--port` `3000`:
+  Start the **server** on port 3000
+- `xd-deploy` `client` `http://localhost:3000`:
+  Start the **client** and connect to the server on http://localhost:3000
+- `xd-deploy` `dev` `install` `http://localhost:3000` `./plugin`:
+  Install (once) the plugin in ./plugin on the server running on http://localhost:3000
+- `xd-deploy` `dev` `watch` `http://localhost:3000` `./plugin`:
+  Install the plugin in ./plugin on the server running on http://localhost:3000. Watch for changes and reinstall on change.
+
+## AUTHOR
+Pablo Klaschka <xdplugins@pabloklashcka.de>

@@ -8,8 +8,12 @@
   },
   "scripts": {
     "test": "echo \"no test specified\" && exit 0",
-    "build": "tsc -p ."
+    "build": "tsc -p .",
+    "build:man": "marked-man man/xd-deploy.1.ronn > man/xd-deploy.1"
   },
+  "man": [
+    "man/xd-deploy.1"
+  ],
   "keywords": [
     "adobe-xd",
     "xd",
@@ -51,7 +55,9 @@
     "@types/node": "^13.1.2",
     "@types/socket.io": "^2.1.4",
     "@types/socket.io-client": "^1.4.32",
-    "typescript": "^3.7.4"
+    "typescript": "^3.7.4",
+    "marked": "^0.8.0",
+    "marked-man": "^0.7.0"
   },
   "maintainers": [
     "Pablo Klaschka <xdplugins@pabloklaschka.de> (https://github.com/pklaschka)"
