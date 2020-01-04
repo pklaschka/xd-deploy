@@ -1,6 +1,6 @@
 {
   "name": "@pklaschka/xd-deploy",
-  "version": "0.9.4",
+  "version": "0.9.5",
   "description": "A toolbelt for easy and quick, iterative plugin development for Adobe XD allowing quick deployment to multiple test machines, making testing your plugin super easy.",
   "main": "index.js",
   "bin": {
@@ -8,12 +8,11 @@
   },
   "scripts": {
     "test": "echo \"no test specified\" && exit 0",
+    "prepublish": "npm run build && npm run build:man",
     "build": "tsc -p .",
-    "build:man": "marked-man man/xd-deploy.1.ronn > man/xd-deploy.1"
+    "build:man": "marked-man man/xd-deploy.1.ronn > xd-deploy.1"
   },
-  "directories": {
-    "man": "man"
-  },
+  "man": "xd-deploy.1",
   "keywords": [
     "adobe-xd",
     "xd",
