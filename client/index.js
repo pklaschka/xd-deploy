@@ -11,7 +11,7 @@ const applyUpdate = require('./apply-update');
  */
 module.exports = (serverLocation) => {
     return new Promise((_resolve, reject) => {
-        const client = io.connect(serverLocation);
+        const client = io.connect(serverLocation, {secure: true, rejectUnauthorized: false});
         client.on('connect', () => {
             console.log('connected');
         });

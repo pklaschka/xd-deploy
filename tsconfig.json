@@ -11,5 +11,6 @@
     "resolveJsonModule": true,
     "baseUrl": "./",
     "noEmit": true
-  }
+  },
+  "exclude": ["deployment"]
 }

@@ -34,6 +34,8 @@ Start the **server**.
 Arguments:
 - `-p`=<port>, `--port`=<port>:
   Use the specified <port>, or, if none is specified, 8080.
+- `-s`, `--https`:
+  Use HTTPS (SSL-encrypted) protocol using a self-signed certificate.
 
 ### `client`
 `xd-deploy` `client` <serverLocation>
@@ -48,14 +50,14 @@ Start the developer server for the plugin in [pluginFolder] (the CWD, if none is
 Mode can be `install` (resulting in the plugin getting installed once) or `watch`, meaning the plugin folder will get watched for changes after the initial install and the plugin gets reinstalled on change.
 
 ## EXAMPLES
-- `xd-deploy` `server` `--port` `3000`:
-  Start the **server** on port 3000
+- `xd-deploy` `server` `--port` `3000` `--https`:
+  Start the **server** on port 3000 using SSL, accessible at https://localhost:3000
 - `xd-deploy` `client` `http://localhost:3000`:
-  Start the **client** and connect to the server on http://localhost:3000
+  Start the **client** and connect to the server on https://localhost:3000
 - `xd-deploy` `dev` `install` `http://localhost:3000` `./plugin`:
-  Install (once) the plugin in ./plugin on the server running on http://localhost:3000
+  Install (once) the plugin in ./plugin on the server running on https://localhost:3000
 - `xd-deploy` `dev` `watch` `http://localhost:3000` `./plugin`:
-  Install the plugin in ./plugin on the server running on http://localhost:3000. Watch for changes and reinstall on change.
+  Install the plugin in ./plugin on the server running on https://localhost:3000. Watch for changes and reinstall on change.
 
 ## AUTHOR
 Pablo Klaschka <xdplugins@pabloklashcka.de>
