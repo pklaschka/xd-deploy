@@ -11,9 +11,9 @@
     "build": "tsc -p .",
     "build:man": "marked-man man/xd-deploy.1.ronn > man/xd-deploy.1"
   },
-  "man": [
-    "man/xd-deploy.1"
-  ],
+  "directories": {
+    "man": "man"
+  },
   "keywords": [
     "adobe-xd",
     "xd",
