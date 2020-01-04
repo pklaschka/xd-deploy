@@ -6,14 +6,17 @@
 
 const program = require('commander');
 const packageJSON = require('./package.json');
+const {log} = require("./lib/error-handler");
+const {fatal} = require("./lib/error-handler");
+const {setVerbose} = require("./lib/error-handler");
 
 program
     .name('xd-deploy')
     .version(packageJSON.version)
     .action(() => {
-        console.error('No valid command specified.');
         program.outputHelp();
-        process.exit(1);
+        log();
+        fatal(new Error('No valid command specified.'));
     });
 
 program
@@ -29,15 +32,12 @@ program
          * @returns {Promise<void>}
          */
         async (options) => {
+            setVerbose(options.debug);
             try {
                 const server = require('./server');
                 await server(options.port, options.https);
             } catch (e) {
-                console.error(e.message);
-                if (options.debug) {
-                    console.error(e.stack);
-                }
-                process.exit(1);
+                fatal(e);
             }
         }
     );
@@ -53,15 +53,12 @@ program
     .alias('dev')
     .option('-d, --debug', 'enable verbose debugging output')
     .action(async (action, serverLocation, directory, options) => {
+        setVerbose(options.debug);
         try {
             const devClient = require('./dev-client');
             await devClient(action, serverLocation, directory || '.');
         } catch (e) {
-            console.error(e.message);
-            if (options.debug) {
-                console.error(e.stack);
-            }
-            process.exit(1);
+            fatal(e);
         }
     });
 
@@ -71,15 +68,12 @@ program.command('client <serverLocation>')
     })
     .option('-d, --debug', 'enable verbose debugging output')
     .action(async (serverLocation, options) => {
+        setVerbose(options.debug);
         try {
             const client = require('./client');
             await client(serverLocation);
         } catch (e) {
-            console.error(e.message);
-            if (options.debug) {
-                console.error(e.stack);
-            }
-            process.exit(1);
+            fatal(e);
         }
     });
 

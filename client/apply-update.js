@@ -14,6 +14,8 @@ const fs = require('fs');
 const extract = require('extract-zip');
 const rrmdir = require('../lib/rmdir');
 const path = require('path');
+const {error} = require("../lib/error-handler");
+const {log} = require("../lib/error-handler");
 
 module.exports = applyUpdate;
 
@@ -72,9 +74,9 @@ async function fetchPluginZip(id, serverLocation, location) {
  * @returns {Promise<void>}
  */
 async function applyUpdate({id}, serverLocation) {
-    console.log('Updating plugin with id', id);
+    log('Updating plugin with id', id);
     // download zip
-    console.log('> Downloading plugin');
+    log('> Downloading plugin');
 
     if (fs.existsSync(zipLocation))
         fs.unlinkSync(zipLocation);
@@ -82,13 +84,13 @@ async function applyUpdate({id}, serverLocation) {
 
     try {
         await fetchPluginZip(id, serverLocation, zipLocation);
-        console.log(`> Download complete. Extracting to ${xdPluginFolderLocation}`);
+        log(`> Download complete. Extracting to ${xdPluginFolderLocation}`);
         await extractToPluginFolder(id);
-        console.log('> Extraction completed.');
+        log('> Extraction completed.');
     } catch (e) {
-        console.warn(e.message);
+        error(e);
         if (e.response.status === 404) {
-            console.warn('> Server returned 404, ignoring change notification');
+            log('> Server returned 404, ignoring change notification');
         }
     }
 }

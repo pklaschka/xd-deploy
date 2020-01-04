@@ -14,6 +14,7 @@ const axios = axiosLib.create({
 });
 
 const chokidar = require('chokidar');
+const {log} = require("../lib/error-handler");
 
 /**
  * Run the developer client
@@ -58,7 +59,7 @@ async function send(serverLocation, localLocation) {
     if (!serverLocation)
         throw new Error('Server location not specified');
     const id = getId(localLocation);
-    console.info('Sending plugin', id);
+    log('Sending plugin', id);
 
     const zipFolder = path.join(fs.mkdtempSync('xd-deploy-dev'));
     const zipLocation = path.join(zipFolder, `${id}.zip`);
@@ -72,7 +73,7 @@ async function send(serverLocation, localLocation) {
 
     rmdir(zipFolder);
 
-    console.info('Sent successfully');
+    log('Sent successfully');
 }
 
 /**

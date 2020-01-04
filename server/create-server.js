@@ -3,6 +3,7 @@
  */
 
 const selfSigned = require('selfsigned');
+const {log} = require("../lib/error-handler");
 
 /**
  * Creates a server for http or httpss usage
@@ -12,7 +13,7 @@ const selfSigned = require('selfsigned');
  */
 module.exports = function createServer(app, useHTTPs) {
     if (useHTTPs) {
-        console.log('Creating SSL certificates');
+        log('Creating SSL certificates');
         const certs = selfSigned.generate([
                 {name: 'commonName', value: 'xd-deploy'}
             ],

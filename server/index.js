@@ -13,15 +13,14 @@ const fs = require('fs');
 const path = require('path');
 const rrmdir = require('../lib/rmdir');
 const createServer = require('./create-server');
-
+const {log} = require("../lib/error-handler");
+const {error} = require("../lib/error-handler");
 const app = express();
 app.use(zip());
 
 const {broadcast, startSocketServer} = require('./socket-server');
 
 const deploymentFolder = require('path').join(require('../lib/xd-deploy-folder'), 'server');
-
-console.log(deploymentFolder);
 
 /**
  * Route for downloading the plugin with the specified id
@@ -56,16 +55,22 @@ app.post('/post/:id', async (req, res) => {
     if (fs.existsSync(path.join(deploymentFolder, id)))
         await rrmdir(path.join(deploymentFolder, id));
 
-    console.info('Receiving update for', id);
+    log('Receiving update for', id);
     fs.writeFileSync(zipLocation, req.body);
 
     // Extract zip
-    extract(zipLocation, {dir: path.join(deploymentFolder, id)}, (error) => {
-        if (error) {
-            throw error;
+    extract(zipLocation, {dir: path.join(deploymentFolder, id)}, (e) => {
+        if (e) {
+            error(e);
+            return res.status(500).send();
         }
         fs.unlinkSync(zipLocation);
-        broadcast(id);
+        try {
+            broadcast(id);
+        } catch (e) {
+            error(e);
+            return res.status(500).send();
+        }
         return res.json({status: 'ok'});
     });
 });
@@ -79,19 +84,19 @@ app.get('/plugins', (_req, res) => {
 });
 
 /**
- *
+ * Run the server
  * @param {number} port The port on which the server should run
  * @param {boolean} useHTTPs
  */
 module.exports = (port, useHTTPs) => {
     const server = createServer(app, useHTTPs);
     if (!fs.existsSync(deploymentFolder)) {
-        console.info('Creating deployment folder');
+        log('Creating deployment folder');
         fs.mkdirSync(deploymentFolder);
     }
 
     startSocketServer(server);
-    console.info(`Listening on port ${port}.`);
+    log(`Listening on port ${port}.`);
 
     server.listen(port);
 };

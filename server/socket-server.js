@@ -3,6 +3,7 @@
  */
 
 const socketIO = require('socket.io');
+const {log} = require("../lib/error-handler");
 
 /**
  * The socket server
@@ -20,7 +21,7 @@ function startSocketServer(server) {
     if (io)
         throw new Error('Socket server is already running');
     io = socketIO(server);
-    console.log('Socket server started');
+    log('Socket server started');
 
     /**
      * Logs an event to the console
@@ -28,7 +29,7 @@ function startSocketServer(server) {
      * @param {'connected'|'disconnected'} event
      */
     function logConnected(socket, event) {
-        console.log(socket.handshake.address, event, 'at', socket.handshake.time);
+        log(socket.handshake.address, event, 'at', socket.handshake.time);
     }
 
     io.on('connect',
@@ -56,7 +57,7 @@ const broadcast = (id) => {
     if (!io)
         throw new Error('Socket server not running');
 
-    console.info('Broadcasting update for', id);
+    log('Broadcasting update for', id);
     io.sockets.emit('changed', {for: 'everyone', id});
 };
 
