@@ -5,4 +5,4 @@ client/current.zip
 deployment/*
 dev-client/*.zip
 
-man/xd-deploy.1
+xd-deploy.1

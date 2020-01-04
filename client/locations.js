@@ -1,14 +1,16 @@
 /*
  * Copyright (c) 2020. by Pablo Klaschka
  */
-
+require('fs');
 const path = require('path');
+
+const zipFolder = path.join(require('../lib/xd-deploy-folder'), 'client');
 
 /**
  * The temporary location for Zip files that get downloaded.
  * @type {string}
  */
-const zipLocation = path.join(__dirname, './current.zip');
+const zipLocation = path.join(zipFolder, 'current.zip');
 
 /**
  * The user's home directory path

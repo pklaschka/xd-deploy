@@ -19,8 +19,9 @@ app.use(zip());
 
 const {broadcast, startSocketServer} = require('./socket-server');
 
-const deploymentFolder = require('path').join(__dirname, '../deployment');
+const deploymentFolder = require('path').join(require('../lib/xd-deploy-folder'), 'server');
 
+console.log(deploymentFolder);
 
 /**
  * Route for downloading the plugin with the specified id

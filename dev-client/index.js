@@ -5,6 +5,7 @@
 const fs = require('fs');
 const path = require('path');
 const zip = require('../lib/zip');
+const rmdir = require('../lib/rmdir');
 const {default: axiosLib} = require('axios'); // import style for tsc --checkJS, cf. https://github.com/axios/axios/issues/2145
 const axios = axiosLib.create({
     httpsAgent: new (require('https').Agent)({
@@ -46,6 +47,7 @@ module.exports = async function(action, serverLocation, location = '.') {
     }
 };
 
+
 /**
  * Send the current version to the server
  * @param {string} serverLocation The server location
@@ -56,8 +58,10 @@ async function send(serverLocation, localLocation) {
     if (!serverLocation)
         throw new Error('Server location not specified');
     const id = getId(localLocation);
-    const zipLocation = path.join(__dirname, `${id}.zip`);
     console.info('Sending plugin', id);
+
+    const zipFolder = path.join(fs.mkdtempSync('xd-deploy-dev'));
+    const zipLocation = path.join(zipFolder, `${id}.zip`);
 
     await zip(localLocation, zipLocation);
     await axios.post(serverLocation + '/post/' + id,
@@ -66,7 +70,7 @@ async function send(serverLocation, localLocation) {
         }
     );
 
-    fs.unlinkSync(zipLocation);
+    rmdir(zipFolder);
 
     console.info('Sent successfully');
 }

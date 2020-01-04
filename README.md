@@ -6,6 +6,8 @@ npx @pklaschka/xd-deploy <command>
 
 A toolbelt for easy and quick, iterative plugin development for Adobe XD allowing quick deployment to multiple test machines, making testing your plugin super easy.
 
+![GIF demonstrating the tool](./example.gif)
+
 ### Installation
 ```bash
 npm install -g @pklaschka/xd-deploy
