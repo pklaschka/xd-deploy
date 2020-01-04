@@ -4,7 +4,12 @@
 
 const {zipLocation, xdPluginFolderLocation} = require('./locations');
 
-const {default: axios} = require('axios'); // import style for tsc --checkJS, cf. https://github.com/axios/axios/issues/2145
+const {default: axiosLib} = require('axios'); // import style for tsc --checkJS, cf. https://github.com/axios/axios/issues/2145
+const axios = axiosLib.create({
+    httpsAgent: new (require('https').Agent)({
+        rejectUnauthorized: false
+    })
+});
 const fs = require('fs');
 const extract = require('extract-zip');
 const rrmdir = require('../lib/rmdir');
@@ -67,6 +72,7 @@ async function applyUpdate({id}, serverLocation) {
         });
         zip.data.pipe(writer);
     } catch (e) {
+        console.warn(e.message);
         if (e.response.status === 404) {
             console.warn('> Server returned 404, ignoring change notification');
         }

@@ -12,12 +12,11 @@ const extract = require('extract-zip');
 const fs = require('fs');
 const path = require('path');
 const rrmdir = require('../lib/rmdir');
+const createServer = require('./create-server');
 
 const app = express();
 app.use(zip());
 
-const server = new (require('http').Server)(app);
-const chokidar = require('chokidar');
 const {broadcast, startSocketServer} = require('./socket-server');
 
 const deploymentFolder = require('path').join(__dirname, '../deployment');
@@ -65,14 +64,14 @@ app.post('/post/:id', async (req, res) => {
             throw error;
         }
         fs.unlinkSync(zipLocation);
-        // io.emit('changed', {for: 'everyone', id});
+        broadcast(id);
         return res.json({status: 'ok'});
     });
 });
 
-app.get('/', (_req, res) => {
-    return res.status(204).send();
-});
+// app.get('/', (_req, res) => {
+//     return res.status(204).send();
+// });
 
 app.get('/plugins', (_req, res) => {
     return res.json(fs.readdirSync(deploymentFolder));
@@ -81,8 +80,10 @@ app.get('/plugins', (_req, res) => {
 /**
  *
  * @param {number} port The port on which the server should run
+ * @param {boolean} useHTTPs
  */
-module.exports = (port) => {
+module.exports = (port, useHTTPs) => {
+    const server = createServer(app, useHTTPs);
     if (!fs.existsSync(deploymentFolder)) {
         console.info('Creating deployment folder');
         fs.mkdirSync(deploymentFolder);
@@ -90,24 +91,6 @@ module.exports = (port) => {
 
     startSocketServer(server);
     console.info(`Listening on port ${port}.`);
-
-    const watcher = chokidar.watch(deploymentFolder, {
-        persistent: true
-    });
-
-    /**
-     * Check if update affects plugins and if so, broadcast it on the socket server
-     * @param {string} path The updated path
-     */
-    const onUpdate = (path) => {
-        if (/deployment\/[a-z0-9]+\/.*$/.test(path)) {
-            broadcast(path);
-        }
-    };
-
-    watcher.on('add', path => onUpdate(path));
-    watcher.on('change', path => onUpdate(path));
-    watcher.on('unlink', path => onUpdate(path));
 
     server.listen(port);
 };

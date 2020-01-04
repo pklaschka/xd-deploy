@@ -3,7 +3,6 @@
  */
 
 const socketIO = require('socket.io');
-const _ = require('lodash');
 
 /**
  * The socket server
@@ -21,6 +20,7 @@ function startSocketServer(server) {
     if (io)
         throw new Error('Socket server is already running');
     io = socketIO(server);
+    console.log('Socket server started');
 
     /**
      * Logs an event to the console
@@ -48,30 +48,17 @@ function startSocketServer(server) {
 /**
  * Broadcast a change to a plugin
  * @type function
- * @param {string} path
+ * @param {string} id
  * @returns {void}
  * @throws {Error} when called while the server isn't running
  */
-const broadcast = _.debounce((path) => {
+const broadcast = (id) => {
     if (!io)
         throw new Error('Socket server not running');
 
-    const idMatch = /deployment\/([a-z0-9]+)\/?$/.exec(path);
-
-    if (!idMatch || idMatch.length < 2)
-        throw new Error('No id found in changed path');
-
-    const id = idMatch[1];
-
-    const {emit} = io;
-    if (/deployment\/[a-z0-9]+$/.test(path)) {
-        console.info('Change detected, broadcasting');
-        emit('changed', {for: 'everyone', id});
-    } else {
-        console.info('Change detected, broadcasting');
-        emit('changed', {for: 'everyone', id});
-    }
-}, 2000);
+    console.info('Broadcasting update for', id);
+    io.sockets.emit('changed', {for: 'everyone', id});
+};
 
 /**
  * Stop the socket server, if it's running

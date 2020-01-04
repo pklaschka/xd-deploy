@@ -20,11 +20,12 @@ program
     .command('server')
     .description('start the server providing a bridge between clients and dev-client')
     .option('-p, --port [port]', 'Which port to use', parseFloat, 8080)
+    .option('-s, --https', 'Use https. The server then generates self-signed certificates and uses them for communication')
     .option('-d, --debug', 'enable verbose debugging output')
     .action(async (options) => {
         try {
             const server = require('./server');
-            await server(options.port);
+            await server(options.port, options.https);
         } catch (e) {
             console.error(e.message);
             if (options.debug) {

@@ -40,7 +40,7 @@
     "express": "^4.17.1",
     "express-easy-zip": "^1.1.4",
     "extract-zip": "^1.6.7",
-    "lodash": "^4.17.15",
+    "selfsigned": "^1.10.7",
     "socket.io": "^2.3.0",
     "socket.io-client": "latest"
   },

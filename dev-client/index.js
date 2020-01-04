@@ -5,7 +5,13 @@
 const fs = require('fs');
 const path = require('path');
 const zip = require('../lib/zip');
-const {default: axios} = require('axios'); // import style for tsc --checkJS, cf. https://github.com/axios/axios/issues/2145
+const {default: axiosLib} = require('axios'); // import style for tsc --checkJS, cf. https://github.com/axios/axios/issues/2145
+const axios = axiosLib.create({
+    httpsAgent: new (require('https').Agent)({
+        rejectUnauthorized: false
+    })
+});
+
 const chokidar = require('chokidar');
 
 /**
