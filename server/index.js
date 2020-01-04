@@ -70,9 +70,9 @@ app.post('/post/:id', async (req, res) => {
     });
 });
 
-// app.get('/', (_req, res) => {
-//     return res.status(204).send();
-// });
+app.get('/', (_req, res) => {
+    return res.status(204).send();
+});
 
 app.get('/plugins', (_req, res) => {
     return res.json(fs.readdirSync(deploymentFolder));

@@ -4,6 +4,10 @@
 require('fs');
 const path = require('path');
 
+/**
+ * The folder where the client puts the temporary zip files
+ * @type {string}
+ */
 const zipFolder = path.join(require('../lib/xd-deploy-folder'), 'client');
 
 /**
@@ -23,12 +27,22 @@ const home = require('os').homedir();
  * @type {Object<string,string>}
  */
 const locations = {
+    /**
+     * Folder for Windows
+     */
     win: path.join(home, 'AppData', 'Local', 'Packages', 'Adobe.CC.XD_adky2gkssdxte', 'LocalState'),
+    /**
+     * Folder for macOS
+     */
     mac: path.join(home, 'Library', 'Application Support', 'Adobe', 'Adobe XD'),
+    /**
+     * Emulated folder for Linux (for testing purposes only!)
+     */
     linux: path.join(home, 'xd-plugins-emulated'),
 };
 
 /**
+ * The operating system te user is on right now
  * @type {string}
  */
 const os = require('os').platform().toString();

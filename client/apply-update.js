@@ -20,30 +20,47 @@ module.exports = applyUpdate;
 /**
  * Extract the plugin to the plugin folder. Override when neccessary
  * @param {string} id The plugin-id
+ * @returns {Promise<void>} Promise
  */
 function extractToPluginFolder(id) {
-    // Extract zip file
-    if (fs.existsSync(path.join(xdPluginFolderLocation, id)))
-        rrmdir(path.join(xdPluginFolderLocation, id));
+    return new Promise((resolve, reject) => {
+        // Extract zip file
+        if (fs.existsSync(path.join(xdPluginFolderLocation, id)))
+            rrmdir(path.join(xdPluginFolderLocation, id));
 
-    if (!fs.existsSync(xdPluginFolderLocation)) {
-        throw new Error('Adobe XD Plugins directory does not exist. Expected ' + xdPluginFolderLocation + ' to exist.');
-    } else {
-        extract(zipLocation, {dir: xdPluginFolderLocation}, () => {
-            console.log('> Extraction completed.');
-        });
-    }
+        if (!fs.existsSync(xdPluginFolderLocation)) {
+            reject('Adobe XD Plugins directory does not exist. Expected ' + xdPluginFolderLocation + ' to exist.');
+        } else {
+            extract(zipLocation, {dir: xdPluginFolderLocation}, () => {
+                resolve();
+            });
+        }
+    })
 }
 
 /**
- * Fetches a plugin from the server
+ * Fetches a plugin from the server and saves it in the `location`
  * @param {string} id The plugin id
  * @param {string} serverLocation The location of the server
+ * @param {string} location the location of the zip file
  * @returns {Promise<import('axios').AxiosResponse<*>>}
  */
-async function fetchPluginZip(id, serverLocation) {
-    return await axios.get(`${serverLocation}/download/${id}`, {
-        responseType: 'stream'
+async function fetchPluginZip(id, serverLocation, location) {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const zip = await axios.get(`${serverLocation}/download/${id}`, {
+                responseType: 'stream'
+            });
+
+            const writer = fs.createWriteStream(location);
+            writer.on('finish', () => {
+                resolve();
+            });
+            writer.on('error', reject);
+            zip.data.pipe(writer);
+        } catch (e) {
+            return reject(e);
+        }
     });
 }
 
@@ -62,15 +79,12 @@ async function applyUpdate({id}, serverLocation) {
     if (fs.existsSync(zipLocation))
         fs.unlinkSync(zipLocation);
 
-    const writer = fs.createWriteStream(zipLocation);
 
     try {
-        const zip = await fetchPluginZip(id, serverLocation);
+        await fetchPluginZip(id, serverLocation, zipLocation);
         console.log(`> Download complete. Extracting to ${xdPluginFolderLocation}`);
-        writer.on('finish', () => {
-            extractToPluginFolder(id);
-        });
-        zip.data.pipe(writer);
+        await extractToPluginFolder(id);
+        console.log('> Extraction completed.');
     } catch (e) {
         console.warn(e.message);
         if (e.response.status === 404) {

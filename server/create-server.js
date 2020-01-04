@@ -8,6 +8,7 @@ const selfSigned = require('selfsigned');
  * Creates a server for http or httpss usage
  * @param {import('http').RequestListener} app The express app that gets used
  * @param {boolean} useHTTPs use HTTPS with a self-signed ceritificate?
+ * @returns {import('http').Server | import('https').Server}
  */
 module.exports = function createServer(app, useHTTPs) {
     if (useHTTPs) {
