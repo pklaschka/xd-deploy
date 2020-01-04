@@ -1,6 +1,6 @@
 {
   "name": "@pklaschka/xd-deploy",
-  "version": "0.9.3",
+  "version": "0.9.4",
   "description": "A toolbelt for easy and quick, iterative plugin development for Adobe XD allowing quick deployment to multiple test machines, making testing your plugin super easy.",
   "main": "index.js",
   "bin": {
