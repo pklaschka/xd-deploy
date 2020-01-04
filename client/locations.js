@@ -30,11 +30,11 @@ const locations = {
     /**
      * Folder for Windows
      */
-    win: path.join(home, 'AppData', 'Local', 'Packages', 'Adobe.CC.XD_adky2gkssdxte', 'LocalState'),
+    win32: path.join(home, 'AppData', 'Local', 'Packages', 'Adobe.CC.XD_adky2gkssdxte', 'LocalState', 'develop'),
     /**
      * Folder for macOS
      */
-    mac: path.join(home, 'Library', 'Application Support', 'Adobe', 'Adobe XD'),
+    mac: path.join(home, 'Library', 'Application Support', 'Adobe', 'Adobe XD', 'develop'),
     /**
      * Emulated folder for Linux (for testing purposes only!)
      */
