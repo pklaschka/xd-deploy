@@ -34,7 +34,7 @@ const locations = {
     /**
      * Folder for macOS
      */
-    mac: path.join(home, 'Library', 'Application Support', 'Adobe', 'Adobe XD', 'develop'),
+    darwin: path.join(home, 'Library', 'Application Support', 'Adobe', 'Adobe XD', 'develop'),
     /**
      * Emulated folder for Linux (for testing purposes only!)
      */
