@@ -20,24 +20,20 @@ const {log} = require("../lib/error-handler");
 module.exports = applyUpdate;
 
 /**
- * Extract the plugin to the plugin folder. Override when neccessary
+ * Extract the plugin to the plugin folder. Override when necessary
  * @param {string} id The plugin-id
  * @returns {Promise<void>} Promise
  */
-function extractToPluginFolder(id) {
-    return new Promise((resolve, reject) => {
+async function extractToPluginFolder(id) {
         // Extract zip file
         if (fs.existsSync(path.join(xdPluginFolderLocation, id)))
             rrmdir(path.join(xdPluginFolderLocation, id));
 
         if (!fs.existsSync(xdPluginFolderLocation)) {
-            reject('Adobe XD Plugins directory does not exist. Expected ' + xdPluginFolderLocation + ' to exist.');
+            throw new Error('Adobe XD Plugins directory does not exist. Expected ' + xdPluginFolderLocation + ' to exist.');
         } else {
-            extract(zipLocation, {dir: xdPluginFolderLocation}, () => {
-                resolve();
-            });
+            return extract(zipLocation, {dir: xdPluginFolderLocation});
         }
-    })
 }
 
 /**

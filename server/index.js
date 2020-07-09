@@ -59,11 +59,9 @@ app.post('/post/:id', async (req, res) => {
     fs.writeFileSync(zipLocation, req.body);
 
     // Extract zip
-    extract(zipLocation, {dir: path.join(deploymentFolder, id)}, (e) => {
-        if (e) {
-            error(e);
-            return res.status(500).send();
-        }
+    try {
+        await extract(zipLocation, {dir: path.join(deploymentFolder, id)})
+
         fs.unlinkSync(zipLocation);
         try {
             broadcast(id);
@@ -72,7 +70,10 @@ app.post('/post/:id', async (req, res) => {
             return res.status(500).send();
         }
         return res.json({status: 'ok'});
-    });
+    } catch (e) {
+        error(e);
+        return res.status(500).send();
+    }
 });
 
 app.get('/', (_req, res) => {
