@@ -41,7 +41,7 @@
     "express-easy-zip": "^1.1.4",
     "extract-zip": "^2.0.1",
     "selfsigned": "^1.10.7",
-    "socket.io": "^2.3.0",
+    "socket.io": "^3.0.4",
     "socket.io-client": "latest"
   },
   "devDependencies": {
