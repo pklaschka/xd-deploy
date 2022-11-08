@@ -55,7 +55,7 @@
     "@types/socket.io-client": "^3.0.0",
     "typescript": "^4.0.2",
     "marked": "^4.0.5",
-    "marked-man": "^0.7.0"
+    "marked-man": "^1.2.5"
   },
   "maintainers": [
     "Pablo Klaschka <xdplugins@pabloklaschka.de> (https://github.com/pklaschka)"
